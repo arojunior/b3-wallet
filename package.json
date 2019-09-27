@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js --exec babel-node"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,12 @@
   },
   "homepage": "https://github.com/supercarteiralab/cei-extractor#readme",
   "dependencies": {
-    "puppeteer": "^1.19.0"
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "puppeteer": "^1.19.0",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
   }
 }
