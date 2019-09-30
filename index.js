@@ -36,7 +36,12 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
   await page.click('#ctl00_ContentPlaceHolder1_txtSenha');
   await page.keyboard.type(pass);
   await page.click('#ctl00_ContentPlaceHolder1_btnLogar');
-  await page.waitForSelector('#ctl00_Breadcrumbs_lblTituloPagina');
+
+  console.log(`=== Login... `);
+
+  await page.waitForSelector('#ctl00_Breadcrumbs_lblTituloPagina', {
+    timeout: 120000
+  });
 
   console.log(`=== Scraping data... Wait for it...`);
 
