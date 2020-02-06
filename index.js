@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const readLine = require('readline-sync');
+const fs = require('fs');
 
 // CEI html selectors
 const BROKER_SELECTOR = '#ctl00_ContentPlaceHolder1_ddlAgentes';
@@ -107,6 +108,7 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
     
     console.log(`==== RESULT ====`);
     console.log(JSON.stringify(extractionData));
+    fs.writeFileSync('resultado.json', extractionData);
 
     // await page.click(SEARCH_BTN_SELECTOR)
     // await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
