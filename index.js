@@ -107,9 +107,10 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
     })
     
     console.log(`==== RESULT ====`);
-    console.log(JSON.stringify(extractionData));
-    fs.writeFileSync('resultado.json', extractionData);
-
+    const resultToText = JSON.stringify(extractionData.filter(v => v));
+    console.log(resultToText);
+    fs.writeFileSync('resultado.json', resultToText);
+    process.exit(0);
     // await page.click(SEARCH_BTN_SELECTOR)
     // await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
   }
