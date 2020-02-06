@@ -10,7 +10,7 @@ const BODY_TABLE_SELECTOR = '#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rpt
 
 const extractionData = [];
 
-console.log(`=== CEI B3 data extractor ===`);
+console.log(`=== Extrator de dados CEI B3 ===`);
 
 const user = readLine.question(`What is your CPF/CNPJ? `);
 const pass = readLine.question(`What is your password? `, { hideEchoBack: true });
@@ -44,7 +44,7 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
     timeout: 120000
   });
 
-  console.log(`=== Scraping data... Wait for it...`);
+  console.log(`=== Coletando dados da B3... Aguarde...`);
 
   // nagivate to negociations and waiting for DOM load
   await page.goto('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx');
@@ -61,7 +61,7 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
     BROKER_SELECTOR
   )
 
-  console.log(`=== YOUR BROKERS ===`);
+  console.log(`=== CORRETORAS ===`);
   console.log(JSON.stringify(brokers));
 
   // extract information of each broker with one single account
@@ -106,12 +106,15 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
       extractionData[brokerId].data.push(dataRow)
     })
     
-    console.log(`==== RESULT ====`);
-    const resultToText = JSON.stringify(extractionData.filter(v => v));
-    console.log(resultToText);
-    fs.writeFileSync('resultado.json', resultToText);
-    process.exit(0);
+    console.log(`==== ${brokerId} ====`);
+    console.log(JSON.stringify(extractionData));  
     // await page.click(SEARCH_BTN_SELECTOR)
     // await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
   }
+
+  console.log(`==== RESULT ====`);
+  const resultToText = JSON.stringify(extractionData.filter(v => v));
+  console.log(resultToText);
+  fs.writeFileSync('resultado.json', resultToText);
+  process.exit(0);  
 })();
