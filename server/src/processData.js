@@ -1,10 +1,10 @@
 const fs = require('fs');
-const result = require("./resultado.json");
+const result = require("../resultado.json");
 
 /**
  * Constantes
  */
-const DATA_FOLDER =  './client/src/data';
+const DATA_FOLDER =  '../client/src/data';
 const FILES = {
   STOCKS: 'stocks.json',
   STOCKS_TOTAL: 'acc-stocks.json',
