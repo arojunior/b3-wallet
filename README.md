@@ -1,4 +1,4 @@
-# Extrator de dados da CEI B3
+# Cateira e extrator de dados da CEI B3
 
 ```sh
 yarn start
