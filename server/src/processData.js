@@ -196,7 +196,7 @@ const buildWallet = () => {
       return row[COLUMNS.TICKER] === ticker || row[COLUMNS.TICKER] === `${ticker}F`;
     });
     
-    wallet[ticker] = { quantidade: 0, valor_total: 0, preco_medio: 0 };
+    wallet[ticker] = { quantidade: 0, total_aquisicao: 0, preco_medio: 0 };
     
     operationsByTicker.forEach(row => {
 
@@ -236,8 +236,8 @@ const buildWallet = () => {
   const walletArray = Object.keys(wallet).map(ticker => ({
     ticker,
     quantidade: wallet[ticker].quantidade,
-    total_aquisicao: wallet[ticker].total_aquisicao.toFixed(2),
     preco_medio: wallet[ticker].preco_medio.toFixed(2),
+    total_aquisicao: wallet[ticker].total_aquisicao.toFixed(2),
   })).filter(({ quantidade }) => quantidade > 0);
 
   return walletArray;
