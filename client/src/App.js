@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTable } from "react-table";
-import stocks from "./data/stocks.json";
-import stocksOptions from "./data/stocks-options.json";
-// import stocksOptionsTotal from "./data/acc-stocks-options.json";
+import wallet from "./data/wallet.json";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -34,7 +32,7 @@ const Styles = styled.div`
   }
 `;
 
-function Table({ columns, data }) {
+const Table = ({ columns, data }) => {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -91,11 +89,10 @@ const DynamicTable = ({ list, title }) => {
   );
 };
 
-function App() {
+const App = () => {
   return (
     <Styles>
-      <DynamicTable list={stocks} title="Ações" />
-      <DynamicTable list={stocksOptions} title="Opções" />
+      <DynamicTable list={wallet} title="Carteira" />
     </Styles>
   );
 }
