@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "extract": "node ./src/extractData.js",
-    "process": "node ./src/processData.js"
+    "process": "node ./src/processData.js",
+    "get-prices": "node ./src/updateData.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/arojunior/b3-wallet/#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "puppeteer": "^2.1.1",
     "readline-sync": "^1.4.10"
   }

@@ -1,47 +1,6 @@
 const fs = require('fs');
 const result = require("../resultado.json");
-
-/**
- * Constantes
- */
-const DATA_FOLDER =  '../client/src/data';
-const FILES = {
-  STOCKS: 'stocks.json',
-  STOCKS_TOTAL: 'acc-stocks.json',
-  OPTIONS: 'stocks-options.json',
-  OPTIONS_TOTAL: 'acc-stocks-options.json',
-  FULL: 'full-operations.json',
-  WALLET: 'wallet.json',
-};
-
-const MONTHS = {
-  1: "Janeiro",
-  2: "Fevereiro",
-  3: "Março",
-  4: "Abril",
-  5: "Maio",
-  6: "Junho",
-  7: "Julho",
-  8: "Agosto",
-  9: "Setembro",
-  10: "Outubro",
-  11: "Novembro",
-  12: "Dezembro"
-};
-
-const COLUMNS = {
-  PRICE: "Preco_(R$)",
-  TOTAL_PRICE: "Valor_Total(R$)",
-  DATE: "Data_do_Negocio",
-  MONTH: "Mes",
-  OPERATION: "Compra/Venda",
-  TICKER: "Codigo_Negociacao",
-  QUANTITY: "Quantidade",
-};
-
-const OPCOES = ["Opção de Compra", "Opção de Venda"];
-
-const ACOES = ["Merc. Fracionário", "Mercado a Vista"];
+const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES } = require('./constants');
 
 /* Utils */
 const flatMap = a => [].concat(...a);
@@ -236,8 +195,8 @@ const buildWallet = () => {
   const walletArray = Object.keys(wallet).map(ticker => ({
     ticker,
     quantidade: wallet[ticker].quantidade,
-    preco_medio: wallet[ticker].preco_medio.toFixed(2),
-    total_aquisicao: wallet[ticker].total_aquisicao.toFixed(2),
+    preco_medio: parseFloat(wallet[ticker].preco_medio),
+    total_aquisicao: parseFloat(wallet[ticker].total_aquisicao),
   })).filter(({ quantidade }) => quantidade > 0);
 
   return walletArray;

@@ -14,6 +14,11 @@ Depois de extrair
 yarn process
 ```
 
+Atualizando preços em tempo real (a cada 5 minutos):
+```sh
+yarn get-prices
+```
+
 #### Executando o client
 
 *No diretório `client`*
