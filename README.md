@@ -1,5 +1,23 @@
 # Cateira e extrator de dados da CEI B3
 
+
+#### Extraindo e processando os dados
+
+  *No diretório `server`*
+
+```sh
+yarn extract
+```
+
+Depois de extrair
+```sh
+yarn process
+```
+
+#### Executando o client
+
+*No diretório `client`*
+
 ```sh
 yarn start
 ```
