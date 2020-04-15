@@ -14,13 +14,15 @@ const updateData = () => {
 
       const preco_atual = quote.price;
       const total_atual = stock.quantidade * quote.price;
-      const variacao = parseFloat(((total_atual - stock.total_aquisicao) * 100 ) / stock.total_aquisicao);
+      const variacao_dia =  quote.marketChange;
+      const variacao_total = parseFloat(((total_atual - stock.total_aquisicao) * 100 ) / stock.total_aquisicao);
 
       return {
         ...stock,
         preco_atual,
         total_atual,
-        variacao,
+        variacao_dia,
+        variacao_total,
       };
     });
     

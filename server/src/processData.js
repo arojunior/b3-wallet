@@ -145,7 +145,7 @@ const buildWallet = () => {
 
     return ticker;
   })
-  .filter(onlyUnique); 
+  .filter(onlyUnique).sort(); 
 
   /**
    * Percorre lista de tickers e calcula operações do extrato

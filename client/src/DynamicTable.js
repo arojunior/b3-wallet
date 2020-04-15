@@ -89,12 +89,10 @@ const DynamicTable = ({ list, title }) => {
   );
 };
 
-const App = () => {
+export default () => {
   return (
     <Styles>
       <DynamicTable list={wallet} title="Carteira" />
     </Styles>
   );
-}
-
-export default App;
+};
