@@ -37,3 +37,7 @@ yarn start
 - Leitura de notas de corretagem para apuração
 
 **Work in progress!**
+
+## LICENSE
+Non-Profit Open Software License version 3.0 (NPOSL-3.0)
+https://opensource.org/licenses/NPOSL-3.0

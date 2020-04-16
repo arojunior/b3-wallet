@@ -1,0 +1,15 @@
+{
+  "name": "b3-wallet",
+  "version": "1.0.0",
+  "description": "Cateira e extrator de dados da CEI B3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arojunior/b3-wallet.git"
+  },
+  "author": "Junior Oliveira",
+  "license": "NPOSL-3.0",
+  "bugs": {
+    "url": "https://github.com/arojunior/b3-wallet/issues"
+  },
+  "homepage": "https://github.com/arojunior/b3-wallet/#readme"
+}
