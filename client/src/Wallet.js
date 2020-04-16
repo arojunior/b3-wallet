@@ -49,6 +49,7 @@ export default () => {
 
   return (
     <TableContainer component={Paper}>
+      <h2>Última atualização: {new Date(wallet.updated).toLocaleString('pt-BR')}</h2>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -64,7 +65,7 @@ export default () => {
           </TableRow>
         </TableHead>
         <TableBody>      
-          {wallet.map((row) => {
+          {wallet.data.map((row) => {
             const diff = row.total_atual - row.total_aquisicao;            
             totals.aquisicao +=  row.total_aquisicao;
             totals.atual +=  row.total_atual;

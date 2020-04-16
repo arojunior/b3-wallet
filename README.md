@@ -9,11 +9,6 @@
 yarn extract
 ```
 
-Depois de extrair
-```sh
-yarn process
-```
-
 Atualizando preços em tempo real (a cada 5 minutos):
 ```sh
 yarn get-prices

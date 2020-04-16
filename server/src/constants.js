@@ -1,12 +1,14 @@
 exports.DATA_FOLDER =  '../client/src/data';
 
 exports.FILES = {
+  EXTRACT: 'b3_result.json',
   STOCKS: 'stocks.json',
   STOCKS_TOTAL: 'acc-stocks.json',
   OPTIONS: 'stocks-options.json',
   OPTIONS_TOTAL: 'acc-stocks-options.json',
   FULL: 'full-operations.json',
   WALLET: 'wallet.json',
+  CREDENTIALS: 'credentials.json',
 };
 
 exports.MONTHS = {

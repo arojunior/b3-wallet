@@ -4,8 +4,7 @@
   "description": "Cateira e extrator de dados da CEI B3",
   "main": "index.js",
   "scripts": {
-    "extract": "node ./src/extractData.js",
-    "process": "node ./src/processData.js",
+    "extract": "node ./src/extractData.js && node ./src/processData.js",
     "get-prices": "node ./src/updateData.js"
   },
   "repository": {

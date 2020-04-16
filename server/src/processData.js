@@ -1,5 +1,5 @@
 const fs = require('fs');
-const result = require("../resultado.json");
+const result = require("../../client/src/data/b3_result.json");
 const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES } = require('./constants');
 
 /* Utils */
@@ -199,7 +199,9 @@ const buildWallet = () => {
     total_aquisicao: parseFloat(wallet[ticker].total_aquisicao),
   })).filter(({ quantidade }) => quantidade > 0);
 
-  return walletArray;
+  return { data: walletArray, updated: new Date() };
 }
 
 fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(buildWallet()));
+
+console.log(`==== DADOS PROCESSADOS COM SUCESSO ====`);

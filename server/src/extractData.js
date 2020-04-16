@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const readLine = require('readline-sync');
 const fs = require('fs');
+const { DATA_FOLDER, FILES } = require('./constants');
 
 // CEI html selectors
 const BROKER_SELECTOR = '#ctl00_ContentPlaceHolder1_ddlAgentes';
@@ -12,8 +13,20 @@ const extractionData = [];
 
 console.log(`=== Extrator de dados CEI B3 ===`);
 
-const user = readLine.question(`What is your CPF/CNPJ? `);
-const pass = readLine.question(`What is your password? `, { hideEchoBack: true });
+const getCredentials = () => {
+  try {
+    const { user, pass } = require(`../${DATA_FOLDER}/${FILES.CREDENTIALS}`);
+    return { user, pass };
+  } catch(e) {
+    const user = readLine.question(`Qual o CPF/CNPJ? `);
+    const pass = readLine.question(`Qual a sua senha? `, { hideEchoBack: true });
+
+    fs.writeFileSync(`${DATA_FOLDER}/${FILES.CREDENTIALS}`, JSON.stringify({ user, pass }));
+    return { user, pass };
+  }
+}
+
+const { user, pass } = getCredentials();
 
 (async () => {
 
@@ -40,9 +53,13 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
 
   console.log(`=== Login... `);
 
-  await page.waitForSelector('#ctl00_Breadcrumbs_lblTituloPagina', {
-    timeout: 120000
-  });
+  try {
+    await page.waitForSelector('#ctl00_Breadcrumbs_lblTituloPagina', {
+      timeout: 120000
+    });
+  } catch (e) {
+    fs.writeFileSync(`${DATA_FOLDER}/${FILES.CREDENTIALS}`, JSON.stringify({}));
+  }
 
   console.log(`=== Coletando dados da B3... Aguarde...`);
 
@@ -108,13 +125,11 @@ const pass = readLine.question(`What is your password? `, { hideEchoBack: true }
     
     console.log(`==== ${brokerId} ====`);
     console.log(JSON.stringify(extractionData));  
-    // await page.click(SEARCH_BTN_SELECTOR)
-    // await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
   }
 
   console.log(`==== RESULT ====`);
   const resultToText = JSON.stringify(extractionData.filter(v => v));
   console.log(resultToText);
-  fs.writeFileSync('resultado.json', resultToText);
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.EXTRACT}`, resultToText);
   process.exit(0);  
 })();
