@@ -83,9 +83,9 @@ const { user, pass } = getCredentials();
 
   // extract information of each broker with one single account
   for (let index = 1; index < brokers.length; index++) {
-    const brokerId = brokers[index].id    
+    const { id: brokerId, name: brokerName } = brokers[index]
     extractionData[brokerId] = {
-      name: brokers[index].name,
+      name: brokerName,
       data: []
     }
 
@@ -97,6 +97,8 @@ const { user, pass } = getCredentials();
     try {
       await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 30 * 1000 })
     } catch (error) {
+      console.log(`==== CORRETORA ${brokerName} NÃO POSSUI ATIVOS NEGOCIADOS ====`)
+      continue
     }
 
     if (index == 1) {
