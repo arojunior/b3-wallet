@@ -1,6 +1,6 @@
 const fs = require('fs');
 const result = require("../../client/src/data/b3_result.json");
-const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES } = require('./constants');
+const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require('./constants');
 
 /* Utils */
 const flatMap = a => [].concat(...a);
@@ -145,15 +145,19 @@ const buildWallet = () => {
 
     return ticker;
   })
-  .filter(onlyUnique).sort(); 
+  .filter(ticker => !OLD_TICKERS.some(item => item === ticker))
+  .filter(onlyUnique)
+  .sort(); 
 
   /**
    * Percorre lista de tickers e calcula operações do extrato
    */
+  const applyFilterByTicker = (row, ticker) => {
+    return row[COLUMNS.TICKER] === ticker || row[COLUMNS.TICKER] === `${ticker}F`;
+  }
+
   tickers.forEach(ticker => {
-    const operationsByTicker = acoesList.filter(row =>  {
-      return row[COLUMNS.TICKER] === ticker || row[COLUMNS.TICKER] === `${ticker}F`;
-    });
+    const operationsByTicker = acoesList.filter(row =>  applyFilterByTicker(row, ticker));
     
     wallet[ticker] = { quantidade: 0, total_aquisicao: 0, preco_medio: 0 };
     
