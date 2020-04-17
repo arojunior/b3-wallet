@@ -167,7 +167,7 @@ const buildWallet = () => {
        * Calcula operação de compra
        */
       if (row[COLUMNS.OPERATION] === "C") {
-        const quantidade = wallet[ticker].quantidade + Number(row[COLUMNS.QUANTITY]);
+        const quantidade = wallet[ticker].quantidade + Number(row[COLUMNS.QUANTITY].replace('.', ''));
         const total_aquisicao = wallet[ticker].total_aquisicao + row[COLUMNS.TOTAL_PRICE];
         
         wallet[ticker] = {
