@@ -10,7 +10,7 @@ exports.getQuote = ticker => {
 
     const quote = {
       ticker,
-      price: parseFloat(main.context.dispatcher.stores.QuoteSummaryStore.financialData.currentPrice.fmt),
+      price: parseFloat(main.context.dispatcher.stores.QuoteSummaryStore.price.regularMarketPrice.fmt),
       open: parseFloat(main.context.dispatcher.stores.QuoteSummaryStore.price.regularMarketOpen.fmt),
       high: parseFloat(main.context.dispatcher.stores.QuoteSummaryStore.price.regularMarketDayHigh.fmt),
       low: parseFloat(main.context.dispatcher.stores.QuoteSummaryStore.price.regularMarketDayLow.fmt),
@@ -20,7 +20,7 @@ exports.getQuote = ticker => {
       shortName: main.context.dispatcher.stores.QuoteSummaryStore.price.shortName,
       longName: main.context.dispatcher.stores.QuoteSummaryStore.price.longName,
     }
-    
+
     return quote;
   })
   .catch(err => {

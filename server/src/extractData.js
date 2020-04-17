@@ -33,8 +33,8 @@ const { user, pass } = getCredentials();
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // for log and better network/loading performance 
-  await page.setRequestInterception(true)  
+  // for log and better network/loading performance
+  await page.setRequestInterception(true)
   page.on('request', (req) => {
     if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image') {
       req.abort()
@@ -95,7 +95,7 @@ const { user, pass } = getCredentials();
     await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
 
     try {
-      await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 30 * 1000 })
+      await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 8 * 1000 })
     } catch (error) {
       console.log(`==== CORRETORA ${brokerName} NÃO POSSUI ATIVOS NEGOCIADOS ====`)
       continue
@@ -124,14 +124,14 @@ const { user, pass } = getCredentials();
       })
       extractionData[brokerId].data.push(dataRow)
     })
-    
+
     console.log(`==== ${brokerId} ====`);
-    console.log(JSON.stringify(extractionData));  
+    console.log(JSON.stringify(extractionData));
   }
 
   console.log(`==== RESULT ====`);
   const resultToText = JSON.stringify(extractionData.filter(v => v));
   console.log(resultToText);
   fs.writeFileSync(`${DATA_FOLDER}/${FILES.EXTRACT}`, resultToText);
-  process.exit(0);  
+  process.exit(0);
 })();
