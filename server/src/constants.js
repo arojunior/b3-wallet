@@ -39,3 +39,10 @@ exports.COLUMNS = {
 exports.OPCOES = ["Opção de Compra", "Opção de Venda"];
 
 exports.ACOES = ["Merc. Fracionário", "Mercado a Vista"];
+
+exports.OLD_TICKERS = [
+  'NATU3',
+  'NATU3F',
+  'BMGB11',
+  'BMGB11F'
+];
