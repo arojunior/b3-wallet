@@ -1,4 +1,4 @@
-exports.DATA_FOLDER =  '../client/src/data';
+exports.DATA_FOLDER =  __dirname + '/../../client/src/data';
 
 exports.FILES = {
   EXTRACT: 'b3_result.json',

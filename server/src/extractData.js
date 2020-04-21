@@ -15,7 +15,7 @@ console.log(`=== Extrator de dados CEI B3 ===`);
 
 const getCredentials = () => {
   try {
-    const { user, pass } = require(`../${DATA_FOLDER}/${FILES.CREDENTIALS}`);
+    const { user, pass } = require(`${DATA_FOLDER}/${FILES.CREDENTIALS}`);
     return { user, pass };
   } catch(e) {
     const user = readLine.question(`Qual o CPF/CNPJ? `);
