@@ -11,5 +11,12 @@
   "bugs": {
     "url": "https://github.com/arojunior/b3-wallet/issues"
   },
-  "homepage": "https://github.com/arojunior/b3-wallet/#readme"
+  "homepage": "https://github.com/arojunior/b3-wallet/#readme",
+  "scripts": {
+    "start": "concurrently \"export BROWSER=none && cd client && yarn start\" \"wait-on http://localhost:3000 && cd electron && yarn start\""
+  } ,
+  "dependencies": {
+    "concurrently": "^5.1.0",
+    "wait-on": "^4.0.2"
+  }
 }

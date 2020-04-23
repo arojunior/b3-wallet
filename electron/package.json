@@ -1,0 +1,16 @@
+{
+  "name": "b3-wallet",
+  "version": "1.0.0",
+  "description": "Cateira e extrator de dados da CEI B3",
+  "author": "Junior Oliveira",
+  "license": "NPOSL-3.0",
+  "main": "./src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^8.2.3",
+    "electron-builder": "^22.5.1",
+    "electron-is-dev": "^1.2.0"
+  }
+}
