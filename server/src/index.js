@@ -8,20 +8,20 @@ const port = 4000;
 let updateInterval;
 
 const updateWallet = (client) => {
-  console.log('Última atualização', new Date().toLocaleString('pt-BR'));
-
+  
   updatePrices().then((data) => {
+    console.log('Última atualização', new Date().toLocaleString('pt-BR'));
     client.emit('walletUpdated', data);
-  });
+  }).catch(() => {});
 
   const FIVE_MINUTES = 300000;
 
   if (updateInterval) clearInterval(updateInterval);
-  updateInterval = setInterval(() => {
-    console.log('Última atualização', new Date().toLocaleString('pt-BR'));
+  updateInterval = setInterval(() => {    
     updatePrices().then((data) => {
+      console.log('Última atualização', new Date().toLocaleString('pt-BR'));
       client.emit('walletUpdated', data);
-    });
+    }).catch(() => {});
   }, FIVE_MINUTES);
 };
 

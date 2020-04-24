@@ -1,14 +1,6 @@
 const fs = require('fs');
 const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require('../constants');
 
-let result;
-
-try {
-  result = require("../../data/b3_result.json");
-} catch (e) {
-
-};
-
 /* Utils */
 const flatMap = a => [].concat(...a);
 
@@ -62,7 +54,7 @@ const monthToName = value => {
  * */
 
 const processData = () => {
-
+  const result = require("../../data/b3_result.json");
   const resultParsed = result.map(broker => {
     const brokerData = broker.data.map(row => {
       return {
