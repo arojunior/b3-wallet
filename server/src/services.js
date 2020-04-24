@@ -22,8 +22,5 @@ exports.getQuote = ticker => {
     }
 
     return quote;
-  })
-  .catch(err => {
-    console.log(err)
   });
 };

@@ -1,29 +1,14 @@
-# Cateira e extrator de dados da CEI B3
-
-
-#### Extraindo e processando os dados
-
-  *No diretório `server`*
-
-```sh
-yarn extract
-```
-
-Atualizando preços em tempo real (a cada 5 minutos):
-```sh
-yarn get-prices
-```
-
-#### Executando o client
-
-*No diretório `client`*
+# Cateira e extrator de dados da CEI/B3
 
 ```sh
 yarn start
 ```
 
-- Utiliza o Puppeteer para acessar o site da CEI B3
+- Utiliza o Puppeteer para acessar o site da CEI/B3 (Canal Eletrônico do Investidor)
 - Loga, extrai os dados e gera um arquivo JSON com o resultado
+- Client em React
+- Server NodeJs puro com Socket.io
+- Tudo empacotado em uma aplicação Electron
 
 ### TODO
 

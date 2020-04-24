@@ -2,24 +2,23 @@
   "name": "cei-extractor",
   "version": "1.0.0",
   "description": "Cateira e extrator de dados da CEI B3",
-  "main": "index.js",
-  "scripts": {
-    "extract": "node ./src/extractData.js && node ./src/processData.js",
-    "get-prices": "node ./src/updateData.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arojunior/b3-wallet.git"
-  },
   "author": "Junior Oliveira",
   "license": "NPOSL-3.0",
-  "bugs": {
-    "url": "https://github.com/arojunior/b3-wallet/issues"
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
   },
-  "homepage": "https://github.com/arojunior/b3-wallet/#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.19.2",    
     "puppeteer": "^2.1.1",
-    "readline-sync": "^1.4.10"
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "data/*.json"
+    ]
   }
 }

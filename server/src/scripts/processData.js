@@ -1,6 +1,6 @@
 const fs = require('fs');
-const result = require("../../client/src/data/b3_result.json");
-const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require('./constants');
+const result = require("../../data/b3_result.json");
+const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require('../constants');
 
 /* Utils */
 const flatMap = a => [].concat(...a);
@@ -53,85 +53,91 @@ const monthToName = value => {
  * Converte datas para formato ISO
  * Convert valores de String para Number
  * */
-const resultParsed = result.map(broker => {
-  const brokerData = broker.data.map(row => {
+
+const processData = () => {
+
+  const resultParsed = result.map(broker => {
+    const brokerData = broker.data.map(row => {
+      return {
+        ...normalizeObjectKeys(row)
+      };
+    });
+
     return {
-      ...normalizeObjectKeys(row)
+      ...broker,
+      data: brokerData.map(data => ({
+        ...data,
+        [COLUMNS.DATE]: convertStringToDate(data[COLUMNS.DATE]),
+        [COLUMNS.MONTH]: monthToName(data[COLUMNS.DATE]),
+        [COLUMNS.PRICE]: convertStringToMoney(data[COLUMNS.PRICE]),
+        [COLUMNS.TOTAL_PRICE]: convertStringToMoney(data[COLUMNS.TOTAL_PRICE])
+      }))
     };
   });
 
-  return {
-    ...broker,
-    data: brokerData.map(data => ({
-      ...data,
-      [COLUMNS.DATE]: convertStringToDate(data[COLUMNS.DATE]),
-      [COLUMNS.MONTH]: monthToName(data[COLUMNS.DATE]),
-      [COLUMNS.PRICE]: convertStringToMoney(data[COLUMNS.PRICE]),
-      [COLUMNS.TOTAL_PRICE]: convertStringToMoney(data[COLUMNS.TOTAL_PRICE])
-    }))
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.FULL}`, JSON.stringify(resultParsed));
+
+  /**
+   * Filtering
+   *
+   * Separa em listas de Opções e Ações
+   * */
+
+  const filterByType = (list, type, groupByBroker = false) => {
+    const applyFilter = data => data.filter(row => type.includes(row["Mercado"]));
+    
+    const filtered =  list.map(broker => {
+      if (groupByBroker) {
+        return {
+          ...broker,
+          data: applyFilter(broker.data)
+        };
+      }
+
+      return applyFilter(broker.data);
+    });
+
+    return flatMap(filtered);
   };
-});
 
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.FULL}`, JSON.stringify(resultParsed));
+  const opcoesList = filterByType(resultParsed, OPCOES);
+  const acoesList = filterByType(resultParsed, ACOES);
 
-/**
- * Filtering
- *
- * Separa em listas de Opções e Ações
- * */
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.STOCKS}`, JSON.stringify(acoesList));
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.OPTIONS}`, JSON.stringify(opcoesList));
 
-const filterByType = (list, type, groupByBroker = false) => {
-  const applyFilter = data => data.filter(row => type.includes(row["Mercado"]));
-  
-  const filtered =  list.map(broker => {
-    if (groupByBroker) {
-      return {
-        ...broker,
-        data: applyFilter(broker.data)
-      };
-    }
+  /**
+   * Consolidação
+  */
 
-    return applyFilter(broker.data);
+  const accByMonth = m => Object.values(MONTHS).map(month => {
+    const filteredByMonth = m.filter(row => row[COLUMNS.MONTH] === month);
+    const sumAll = (prev, acc) => prev + acc[COLUMNS.TOTAL_PRICE];
+
+    return {
+      [month]: {
+        compras: filteredByMonth
+          .filter(row => row[COLUMNS.OPERATION] === "C")
+          .reduce(sumAll, 0),
+        vendas: filteredByMonth
+          .filter(row => row[COLUMNS.OPERATION] === "V")
+          .reduce(sumAll, 0)
+      }
+    };
   });
 
-  return flatMap(filtered);
-};
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.STOCKS_TOTAL}`, JSON.stringify(accByMonth(acoesList)));
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.OPTIONS_TOTAL}`, JSON.stringify(accByMonth(opcoesList)));
 
-const opcoesList = filterByType(resultParsed, OPCOES);
-const acoesList = filterByType(resultParsed, ACOES);
-
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.STOCKS}`, JSON.stringify(acoesList));
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.OPTIONS}`, JSON.stringify(opcoesList));
-
-/**
- * Consolidação
-*/
-
-const accByMonth = m => Object.values(MONTHS).map(month => {
-  const filteredByMonth = m.filter(row => row[COLUMNS.MONTH] === month);
-  const sumAll = (prev, acc) => prev + acc[COLUMNS.TOTAL_PRICE];
-
-  return {
-    [month]: {
-      compras: filteredByMonth
-        .filter(row => row[COLUMNS.OPERATION] === "C")
-        .reduce(sumAll, 0),
-      vendas: filteredByMonth
-        .filter(row => row[COLUMNS.OPERATION] === "V")
-        .reduce(sumAll, 0)
-    }
-  };
-});
-
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.STOCKS_TOTAL}`, JSON.stringify(accByMonth(acoesList)));
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.OPTIONS_TOTAL}`, JSON.stringify(accByMonth(opcoesList)));
+  return { acoesList, opcoesList };
+}
 
 /**
  * Carteira
  */
 const buildWallet = () => {
   let wallet = {};
-
+  const { acoesList } = processData();
   /**
    * Monta lista única de tickers
    */
@@ -203,9 +209,10 @@ const buildWallet = () => {
     total_aquisicao: parseFloat(wallet[ticker].total_aquisicao),
   })).filter(({ quantidade }) => quantidade > 0);
 
-  return { data: walletArray, updated: new Date() };
+  const builtWallet = { data: walletArray, updated: new Date() };
+  fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(builtWallet));
+
+  return builtWallet;
 }
 
-fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(buildWallet()));
-
-console.log(`==== DADOS PROCESSADOS COM SUCESSO ====`);
+module.exports = buildWallet;
