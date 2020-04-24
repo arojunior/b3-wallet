@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './assets/css/index.css';
-import Wallet from './Wallet';
+import Wallet from './components/Wallet';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<Wallet />, document.getElementById('root'));

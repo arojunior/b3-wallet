@@ -1,12 +1,12 @@
 const fs = require('fs');
-const { getQuote } = require('./services');
-const wallet = require('../../client/src/data/wallet.json');
-const { DATA_FOLDER, FILES } = require('./constants');
+const { getQuote } = require('../services');
+const wallet = require('../../data/wallet.json');
+const { DATA_FOLDER, FILES } = require('../constants');
 
 const updateData = () => {
   const requests = wallet.data.map(({ ticker }) => getQuote(ticker));
 
-  Promise.all(requests).then(responses => {
+  return Promise.all(requests).then(responses => {
     const updatedWallet = wallet.data.map(stock => {
       const quote = responses.find(({ ticker }) => ticker === stock.ticker);
 
@@ -25,20 +25,14 @@ const updateData = () => {
         variacao_total,
       };
     });
-    
-    fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify({ data: updatedWallet, updated: new Date() }));
-  }).catch(err => {
-    console.log('ERRO AO ATUALIZAR PREÇOS', err);
+    const newWallet = { data: updatedWallet, updated: new Date() };
+    fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(newWallet));
+    return newWallet;
+  }).catch(() => {
+    console.log('ERRO AO ATUALIZAR PREÇOS');
+    return {};
   });
 };
 
-console.log('Consultando cotações no yahoofinance...');
+module.exports = updateData;
 
-updateData();
-
-const FIVE_MINUTES = 300000;
-
-setInterval(() => {
-  console.log('Última atualização', new Date().toLocaleString('pt-BR'));
-  updateData();
-}, FIVE_MINUTES);

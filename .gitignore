@@ -1,4 +1,5 @@
 node_modules
 resultado.json
 /client/src/data/*.json
+/server/data/*.json
 .idea
