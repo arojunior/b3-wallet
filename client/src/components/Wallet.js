@@ -106,7 +106,7 @@ export default () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {wallet.data && wallet.data.map((row) => {
+          {wallet && wallet.data && wallet.data.map((row) => {
             const diff = row.total_atual - row.total_aquisicao;
             totals.aquisicao +=  row.total_aquisicao;
             totals.atual +=  row.total_atual;
