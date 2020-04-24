@@ -6,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -26,6 +27,9 @@ const useStyles = makeStyles({
   cellNegative: {
     color: 'red'
   },
+  header: {
+     margin: '20px',
+  } 
 });
 
 const renderTotalVariacao = (totals, classes) => {
@@ -50,6 +54,7 @@ export default () => {
 
   useEffect(() => {
     socket.emit('getWallet');
+    socket.emit('getCredentials');
     socket.emit('updateWallet');
 
     socket.on('wallet', newWallet => {
@@ -57,8 +62,11 @@ export default () => {
     });
 
     socket.on('walletUpdated', newWallet => {
-      console.log('walletUpdated', newWallet)
       setWallet(newWallet);
+    });
+
+    socket.on('credentials', credentials => {
+      setValues(credentials);
     });
   }, [])
 
@@ -72,15 +80,17 @@ export default () => {
 
   return (
     <TableContainer component={Paper}>
-      {wallet.updated 
-        ? <h2>Última atualização: {new Date(wallet.updated).toLocaleString('pt-BR')}</h2> 
-        : <span><i>use a importação de dados para visualizar a sua carteira</i></span>
-      }
-      <div>
+      <Grid className={classes.header}>
+        {wallet.updated 
+          ? <h2>Última atualização: {new Date(wallet.updated).toLocaleString('pt-BR')}</h2> 
+          : <span><strong><i>**use a importação de dados para visualizar a sua carteira**</i></strong><br /><br /></span>
+        }
+      </Grid>
+      <Grid className={classes.header}>
         <TextField name="user" onChange={handleChangeValues} label="CPF" value={values.user || ``} />
         <TextField name="pass" onChange={handleChangeValues} type="password" label="Senha" value={values.pass || ``} />
         <Button variant="outlined" onClick={importData}>Importar dados</Button>
-      </div>      
+      </Grid>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -124,7 +134,7 @@ export default () => {
             )
           })}
           <TableRow>
-            <TableCell />
+            <TableCell><strong>{wallet.data ?  `${wallet.data.length} ativos` : null}</strong></TableCell>
             <TableCell />
             <TableCell />
             <TableCell align="right"><strong>{toCurrency.format(totals.aquisicao)}</strong></TableCell>
