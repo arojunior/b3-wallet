@@ -1,6 +1,13 @@
 const fs = require('fs');
-const result = require("../../data/b3_result.json");
 const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require('../constants');
+
+let result;
+
+try {
+  result = require("../../data/b3_result.json");
+} catch (e) {
+
+};
 
 /* Utils */
 const flatMap = a => [].concat(...a);

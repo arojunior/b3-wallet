@@ -1,7 +1,8 @@
 {
   "name": "b3-wallet",
   "version": "1.0.0",
-  "description": "Cateira e extrator de dados da CEI B3",
+  "private": true,
+  "description": "Cateira e extrator de dados da CEI B3",  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arojunior/b3-wallet.git"
@@ -12,9 +13,10 @@
     "url": "https://github.com/arojunior/b3-wallet/issues"
   },
   "homepage": "https://github.com/arojunior/b3-wallet/#readme",
-  "scripts": {
+  "scripts": {  
     "start": "concurrently \"cd server && yarn start\" \"export BROWSER=none && cd client && yarn start\" \"wait-on http://localhost:3000 && cd electron && yarn start\""
-  } ,
+  },
+  "workspaces": ["server", "client", "electron"],
   "dependencies": {
     "concurrently": "^5.1.0",
     "wait-on": "^4.0.2"
