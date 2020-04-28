@@ -2,5 +2,9 @@ node_modules
 resultado.json
 /client/src/data/*.json
 /server/data/*.json
+/electron/dist
+/electron/src/client
+/electron/src/server
 .idea
+.DS_Store
 yarn-error.log

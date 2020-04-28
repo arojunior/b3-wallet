@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "author": "Junior Oliveira",
   "license": "NPOSL-3.0",
+  "homepage": "./",
   "dependencies": {
     "@material-ui/core": "^4.9.10",
     "@testing-library/jest-dom": "^4.2.4",

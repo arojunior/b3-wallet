@@ -4,7 +4,7 @@ const { DATA_FOLDER, FILES } = require('./constants');
 const getDataFromB3 = require('./scripts/extractData');
 const updatePrices = require('./scripts/updateData');
 
-const port = 4000;
+const port = 9990;
 let updateInterval;
 
 const updateWallet = (client) => {
