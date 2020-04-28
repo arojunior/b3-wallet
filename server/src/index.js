@@ -28,7 +28,10 @@ const updateWallet = (client) => {
 const importData = (client, { user, pass }) => {
   getDataFromB3({ user, pass }).then(() => {
     updateWallet(client);
-  });
+    client.emit('dataImported', true);
+  }).catch(() => {
+    client.emit('dataImported', true);
+  })
 };
 
 const getWallet = (client) => {

@@ -24,7 +24,7 @@ function createWindow() {
     //mainWindow.webContents.openDevTools();
   } else {
     // const { fork } = require('child_process');
-    // fork(`${__dirname}/../../server/src/index.js`);
+    // fork(__dirname + '/server/src/index.js');
     require(__dirname + '/server/src/index.js');
   }
 

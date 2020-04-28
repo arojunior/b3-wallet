@@ -83,7 +83,7 @@ module.exports = async ({ user, pass }) => {
       await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
 
       try {
-        await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 8 * 1000 })
+        await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 30 * 1000 })
       } catch (error) {
         console.log(`==== CORRETORA ${brokerName} NÃO POSSUI ATIVOS NEGOCIADOS ====`)
         continue
