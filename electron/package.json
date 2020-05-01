@@ -6,11 +6,29 @@
   "license": "NPOSL-3.0",
   "main": "./src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "electron-builder install-app-deps",
+    "copy-files": "sh copy-files.sh",
+    "preelectron-pack": "cd ../client && yarn build && cd ../electron && yarn copy-files",
+    "postelectron-pack": "sh rm-files.sh",
+    "electron-pack": "electron-builder -mw"
   },
   "dependencies": {
-    "electron": "^8.2.3",
-    "electron-builder": "^22.5.1",
     "electron-is-dev": "^1.2.0"
+  },
+  "devDependencies": {
+    "electron": "8.2.3",
+    "electron-builder": "^22.5.1"
+  },
+  "build": {
+    "appId": "com.arojunior.b3-wallet",
+    "productName": "B3 Wallet",
+    "copyright": "Copyright © 2019 arojunior",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "**/*"
+    ]
   }
 }

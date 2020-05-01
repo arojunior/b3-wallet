@@ -45,6 +45,8 @@ const renderTotalVariacao = (totals, classes) => {
 export default () => {
   const [wallet, setWallet] = useState({});
   const [values, setValues] = useState({});
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [importingData, setImportingData] = useState(false);
   const classes = useStyles();
   const totals = {
     aquisicao: 0,
@@ -68,6 +70,18 @@ export default () => {
     socket.on('credentials', credentials => {
       setValues(credentials);
     });
+
+    socket.on('connect', () => {
+      setSocketConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setSocketConnected(false);
+    });
+
+    socket.on('dataImported', () => {
+      setImportingData(false);
+    });    
   }, [])
 
   const handleChangeValues = event => {
@@ -76,13 +90,14 @@ export default () => {
 
   const importData = () => {
     socket.emit('importData', values);
+    setImportingData(true);
   }
 
   return (
     <TableContainer component={Paper}>
       <Grid className={classes.header}>
         {wallet.updated 
-          ? <h2>Última atualização: {new Date(wallet.updated).toLocaleString('pt-BR')}</h2> 
+          ? <h2>Última atualização: {new Date(wallet.updated).toLocaleString('pt-BR')}</h2>
           : <span><strong><i>**use a importação de dados para visualizar a sua carteira**</i></strong><br /><br /></span>
         }
       </Grid>
@@ -90,6 +105,10 @@ export default () => {
         <TextField name="user" onChange={handleChangeValues} label="CPF" value={values.user || ``} />
         <TextField name="pass" onChange={handleChangeValues} type="password" label="Senha" value={values.pass || ``} />
         <Button variant="outlined" onClick={importData}>Importar dados</Button>
+      </Grid>
+      <Grid>
+        <span>server: {socketConnected ? `conectado`: `desconectado`}</span>
+        <span>{importingData && ` | importando dados... aguarde...`}</span>
       </Grid>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>

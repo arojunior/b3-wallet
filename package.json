@@ -16,7 +16,6 @@
   "scripts": {  
     "start": "concurrently \"cd server && yarn start\" \"export BROWSER=none && cd client && yarn start\" \"wait-on http://localhost:3000 && cd electron && yarn start\""
   },
-  "workspaces": ["server", "client", "electron"],
   "dependencies": {
     "concurrently": "^5.1.0",
     "wait-on": "^4.0.2"

@@ -4,7 +4,7 @@ const { DATA_FOLDER, FILES } = require('./constants');
 const getDataFromB3 = require('./scripts/extractData');
 const updatePrices = require('./scripts/updateData');
 
-const port = 4000;
+const port = 9990;
 let updateInterval;
 
 const updateWallet = (client) => {
@@ -28,7 +28,10 @@ const updateWallet = (client) => {
 const importData = (client, { user, pass }) => {
   getDataFromB3({ user, pass }).then(() => {
     updateWallet(client);
-  });
+    client.emit('dataImported', true);
+  }).catch(() => {
+    client.emit('dataImported', true);
+  })
 };
 
 const getWallet = (client) => {
