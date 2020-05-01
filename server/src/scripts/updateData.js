@@ -14,19 +14,19 @@ const updateData = () => {
 
           if (!quote) return stock;
 
-          const preco_atual = quote.price;
-          const total_atual = stock.quantidade * quote.price;
-          const variacao_dia = quote.marketChange;
-          const variacao_total = parseFloat(
-            ((total_atual - stock.total_aquisicao) * 100) / stock.total_aquisicao,
+          const currentPrice = quote.price;
+          const totalCurrent = stock.quantity * quote.price;
+          const variation = quote.marketChange;
+          const totalVariation = parseFloat(
+            ((totalCurrent - stock.totalPrice) * 100) / stock.totalPrice,
           );
 
           return {
             ...stock,
-            preco_atual,
-            total_atual,
-            variacao_dia,
-            variacao_total,
+            currentPrice,
+            totalCurrent,
+            variation,
+            totalVariation,
           };
         });
         const newWallet = { data: updatedWallet, updated: new Date() };
@@ -38,7 +38,7 @@ const updateData = () => {
         return {};
       });
   } catch (e) {
-    return Promise.reject({});
+    return Promise.reject(Error(`ERRO AO ATUALIZAR PREÇOS`));
   }
 };
 

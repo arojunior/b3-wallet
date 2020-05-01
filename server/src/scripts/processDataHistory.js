@@ -1,44 +1,22 @@
 const fs = require(`fs`);
-const { DATA_FOLDER, FILES, MONTHS, COLUMNS, OPCOES, ACOES, OLD_TICKERS } = require(`../constants`);
+const { DATA_FOLDER, FILES, MONTHS, OPCOES, ACOES, OLD_TICKERS } = require(`../constants`);
+const {
+  flatMap,
+  onlyUnique,
+  normalizeObjectKeys,
+  convertStringToDate,
+  convertStringToMoney,
+  monthToName,
+} = require(`../services/utils`);
 
-/* Utils */
-const flatMap = (a) => [].concat(...a);
-
-const onlyUnique = (value, index, self) => self.indexOf(value) === index;
-
-const normalizeText = (value) =>
-  value
-    .normalize(`NFD`)
-    .replace(/[\u0300-\u036f]/g, ``)
-    .replace(/ /g, `_`);
-
-const normalizeObjectKeys = (obj) => {
-  Object.keys(obj).forEach((key) => {
-    const newKey = normalizeText(key);
-
-    if (key !== newKey) {
-      Object.defineProperty(obj, newKey, Object.getOwnPropertyDescriptor(obj, key));
-      delete obj[key];
-    }
-  });
-
-  return obj;
-};
-
-const convertStringToDate = (value) => {
-  const pieces = value.split(`/`);
-  const year = pieces[2];
-  const month = pieces[1];
-  const day = pieces[0];
-  return new Date(`${year}-${month}-${day}`);
-};
-
-const convertStringToMoney = (value) => {
-  return Number(value.replace(`.`, ``).replace(`,`, `.`));
-};
-
-const monthToName = (value) => {
-  return MONTHS[Number(value.split(`/`)[1])];
+const COLUMNS = {
+  PRICE: `Preco_(R$)`,
+  TOTAL_PRICE: `Valor_Total(R$)`,
+  DATE: `Data_do_Negocio`,
+  MONTH: `Mes`,
+  OPERATION: `Compra/Venda`,
+  TICKER: `Codigo_Negociacao`,
+  QUANTITY: `Quantidade`,
 };
 
 /**
@@ -160,21 +138,20 @@ const buildWallet = () => {
   tickers.forEach((ticker) => {
     const operationsByTicker = acoesList.filter((row) => applyFilterByTicker(row, ticker));
 
-    wallet[ticker] = { quantidade: 0, total_aquisicao: 0, preco_medio: 0 };
+    wallet[ticker] = { quantity: 0, totalPrice: 0, price: 0 };
 
     operationsByTicker.forEach((row) => {
       /**
        * Calcula operação de compra
        */
       if (row[COLUMNS.OPERATION] === `C`) {
-        const quantidade =
-          wallet[ticker].quantidade + Number(row[COLUMNS.QUANTITY].replace(`.`, ``));
-        const total_aquisicao = wallet[ticker].total_aquisicao + row[COLUMNS.TOTAL_PRICE];
+        const quantity = wallet[ticker].quantity + Number(row[COLUMNS.QUANTITY].replace(`.`, ``));
+        const totalPrice = wallet[ticker].totalPrice + row[COLUMNS.TOTAL_PRICE];
 
         wallet[ticker] = {
-          quantidade,
-          total_aquisicao,
-          preco_medio: total_aquisicao / quantidade,
+          quantity,
+          totalPrice,
+          price: totalPrice / quantity,
         };
       }
 
@@ -182,13 +159,13 @@ const buildWallet = () => {
        * Calcula operação de venda
        */
       if (row[COLUMNS.OPERATION] === `V`) {
-        const quantidade = wallet[ticker].quantidade - Number(row[COLUMNS.QUANTITY]);
-        const total_aquisicao = wallet[ticker].total_aquisicao - row[COLUMNS.TOTAL_PRICE];
+        const quantity = wallet[ticker].quantity - Number(row[COLUMNS.QUANTITY]);
+        const totalPrice = wallet[ticker].totalPrice - row[COLUMNS.TOTAL_PRICE];
 
         wallet[ticker] = {
-          quantidade,
-          total_aquisicao: quantidade > 0 ? total_aquisicao : 0,
-          preco_medio: quantidade > 0 ? total_aquisicao / quantidade : 0,
+          quantity,
+          totalPrice: quantity > 0 ? totalPrice : 0,
+          price: quantity > 0 ? totalPrice / quantity : 0,
         };
       }
     });
@@ -200,11 +177,15 @@ const buildWallet = () => {
   const walletArray = Object.keys(wallet)
     .map((ticker) => ({
       ticker,
-      quantidade: wallet[ticker].quantidade,
-      preco_medio: parseFloat(wallet[ticker].preco_medio),
-      total_aquisicao: parseFloat(wallet[ticker].total_aquisicao),
+      quantity: wallet[ticker].quantity,
+      price: parseFloat(wallet[ticker].price),
+      totalPrice: parseFloat(wallet[ticker].totalPrice),
+      currentPrice: 0,
+      totalCurrent: 0,
+      variation: 0,
+      totalVariation: 0,
     }))
-    .filter(({ quantidade }) => quantidade > 0);
+    .filter(({ quantity }) => quantity > 0);
 
   const builtWallet = { data: walletArray, updated: new Date() };
   fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(builtWallet));
