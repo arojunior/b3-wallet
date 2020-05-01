@@ -12,6 +12,8 @@
     "arrow-body-style": 0,
     "dot-notation": 0,
     "no-console": 0,
+    "global-require": 0,
+    "import/no-dynamic-require": 0,
     "prettier/prettier": [
       "error",
       {
