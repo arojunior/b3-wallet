@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { getQuote } = require('../services');
+const { getQuote } = require('../services/quoteService');
 const { DATA_FOLDER, FILES } = require('../constants');
 
 const updateData = () => {

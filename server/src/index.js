@@ -1,7 +1,7 @@
 const server = require('http').createServer();
 const io = require('socket.io')(server, { transports: ['websocket'] });
 const { PORT } = require('./constants');
-const walletService = require('./services/walletServices');
+const walletService = require('./services/walletService');
 
 io.on('connection', (client) => {
   client.emit('connected');
