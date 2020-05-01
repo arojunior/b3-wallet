@@ -46,3 +46,5 @@ exports.OLD_TICKERS = [
   'BMGB11',
   'BMGB11F'
 ];
+
+exports.PORT = 9990;
