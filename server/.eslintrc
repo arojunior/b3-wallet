@@ -26,5 +26,8 @@
       "error",
       "backtick"
     ]    
+  },
+  "globals": {
+    "document": true
   }
 }

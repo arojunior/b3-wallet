@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/arojunior/b3-wallet/#readme",
   "scripts": {  
-    "start": "concurrently \"cd server && yarn start\" \"export BROWSER=none && cd client && yarn start\" \"wait-on http://localhost:3000 && cd electron && yarn start\""
+    "start": "concurrently \"cd server && yarn dev\" \"export BROWSER=none && cd client && yarn start\" \"wait-on http://localhost:3000 && cd electron && yarn start\""
   },
   "workspaces": ["server", "client", "electron"],
   "dependencies": {

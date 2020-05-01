@@ -31,7 +31,8 @@ const importData = (client, { user, pass }) => {
       updateWallet(client);
       client.emit(`dataImported`, true);
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log(`error ao importar dados`, error);
       client.emit(`dataImported`, true);
     });
 };
