@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 const renderTotalVariacao = (totals, classes) => {
-    const total_variacao = ((totals.atual - totals.aquisicao) * 100 ) / totals.aquisicao;
+    const total_variacao = ((totals.current - totals.price) * 100 ) / totals.price;
 
     return (
       <TableCell align="right" className={total_variacao > 0 ? classes.cellPositive : classes.cellNegative}>
@@ -49,8 +49,8 @@ export default () => {
   const [importingData, setImportingData] = useState(false);
   const classes = useStyles();
   const totals = {
-    aquisicao: 0,
-    atual: 0,
+    price: 0,
+    current: 0,
     diff: 0,
   };
 
@@ -126,28 +126,28 @@ export default () => {
         </TableHead>
         <TableBody>
           {wallet && wallet.data && wallet.data.map((row) => {
-            const diff = row.total_atual - row.total_aquisicao;
-            totals.aquisicao +=  row.total_aquisicao;
-            totals.atual +=  row.total_atual;
+            const diff = row.totalCurrent - row.totalPrice;
+            totals.price +=  row.totalPrice;
+            totals.current +=  row.totalCurrent;
             totals.diff +=  diff;
             return (
               <TableRow key={row.ticker}>
                 <TableCell component="th" scope="row">
                   {row.ticker}
                 </TableCell>
-                <TableCell align="right">{row.quantidade}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.preco_medio)}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.total_aquisicao)}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.preco_atual)}</TableCell>
-                <TableCell align="right" className={row.variacao_dia > 0 ? classes.cellPositive : classes.cellNegative}>
-                  {row.variacao_dia.toFixed(2)}%
+                <TableCell align="right">{row.quantity}</TableCell>
+                <TableCell align="right">{toCurrency.format(row.price)}</TableCell>
+                <TableCell align="right">{toCurrency.format(row.totalPrice)}</TableCell>
+                <TableCell align="right">{toCurrency.format(row.currentPrice)}</TableCell>
+                <TableCell align="right" className={row.variation > 0 ? classes.cellPositive : classes.cellNegative}>
+                  {row.variation.toFixed(2)}%
                 </TableCell>
-                <TableCell align="right">{toCurrency.format(row.total_atual)}</TableCell>
+                <TableCell align="right">{toCurrency.format(row.totalCurrent)}</TableCell>
                 <TableCell align="right" className={diff > 0 ? classes.cellPositive : classes.cellNegative}>
                   {toCurrency.format(diff)}
                 </TableCell>
-                <TableCell align="right" className={row.variacao_total > 0 ? classes.cellPositive : classes.cellNegative}>
-                  {row.variacao_total.toFixed(2)}%
+                <TableCell align="right" className={row.totalVariation > 0 ? classes.cellPositive : classes.cellNegative}>
+                {row.totalVariation.toFixed(2)}%
                 </TableCell>
               </TableRow>
             )
@@ -156,10 +156,10 @@ export default () => {
             <TableCell><strong>{wallet.data ?  `${wallet.data.length} ativos` : null}</strong></TableCell>
             <TableCell />
             <TableCell />
-            <TableCell align="right"><strong>{toCurrency.format(totals.aquisicao)}</strong></TableCell>
+            <TableCell align="right"><strong>{toCurrency.format(totals.price)}</strong></TableCell>
             <TableCell />
             <TableCell />
-            <TableCell align="right"><strong>{toCurrency.format(totals.atual)}</strong></TableCell>
+            <TableCell align="right"><strong>{toCurrency.format(totals.current)}</strong></TableCell>
             <TableCell align="right" className={totals.diff > 0 ? classes.cellPositive : classes.cellNegative}>
               <strong>{toCurrency.format(totals.diff)}</strong>
             </TableCell>

@@ -1,50 +1,58 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
-const buildWallet = require('./processData');
-const { DATA_FOLDER, FILES } = require('../constants');
+const puppeteer = require(`puppeteer`);
+const fs = require(`fs`);
+const buildWallet = require(`./processDataHistory`);
+const { DATA_FOLDER, FILES } = require(`../constants`);
+
+const DEFAULT_TIMEOUT = { timeout: 8 * 1000 };
+
+// CEI pages
+const LOGIN_PAGE = `https://cei.b3.com.br/CEI_Responsivo/`;
+const STOCKS_PAGE = `https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx`;
 
 // CEI html selectors
-const BROKER_SELECTOR = '#ctl00_ContentPlaceHolder1_ddlAgentes';
-const SEARCH_BTN_SELECTOR = '#ctl00_ContentPlaceHolder1_btnConsultar';
-const HEAD_TABLE_SELECTOR = '#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > thead > tr > th';
-const BODY_TABLE_SELECTOR = '#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > tbody > tr';
-
-const extractionData = [];
+const BROKER_SELECTOR = `#ctl00_ContentPlaceHolder1_ddlAgentes`;
+const SEARCH_BTN_SELECTOR = `#ctl00_ContentPlaceHolder1_btnConsultar`;
+const HEAD_TABLE_SELECTOR = `#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > thead > tr > th`;
+const BODY_TABLE_SELECTOR = `#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > tbody > tr`;
 
 module.exports = async ({ user, pass }) => {
   console.log(`=== Extrator de dados CEI B3 ===`);
   fs.writeFileSync(`${DATA_FOLDER}/${FILES.CREDENTIALS}`, JSON.stringify({ user, pass }));
 
-  return new Promise(async resolve => {          
-    /**
-     * go to B3 page
-     */
+  /**
+   * go to B3 page
+   */
+  const getExtractData = async () => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // for log and better network/loading performance
-    await page.setRequestInterception(true)
-    page.on('request', (req) => {
-      if(req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image') {
-        req.abort()
+    await page.setRequestInterception(true);
+    page.on(`request`, (req) => {
+      if (
+        req.resourceType() === `stylesheet` ||
+        req.resourceType() === `font` ||
+        req.resourceType() === `image`
+      ) {
+        req.abort();
       } else {
-        req.continue()
+        req.continue();
       }
-    })
+    });
 
     // do auth
-    await page.goto('https://cei.b3.com.br/CEI_Responsivo/');
-    await page.click('#ctl00_ContentPlaceHolder1_txtLogin');
+    await page.goto(LOGIN_PAGE);
+    await page.click(`#ctl00_ContentPlaceHolder1_txtLogin`);
     await page.keyboard.type(user);
-    await page.click('#ctl00_ContentPlaceHolder1_txtSenha');
+    await page.click(`#ctl00_ContentPlaceHolder1_txtSenha`);
     await page.keyboard.type(pass);
-    await page.click('#ctl00_ContentPlaceHolder1_btnLogar');
+    await page.click(`#ctl00_ContentPlaceHolder1_btnLogar`);
 
     console.log(`=== Login... `);
 
     try {
-      await page.waitForSelector('#ctl00_Breadcrumbs_lblTituloPagina', {
-        timeout: 120000
+      await page.waitForSelector(`#ctl00_Breadcrumbs_lblTituloPagina`, {
+        timeout: 120000,
       });
     } catch (e) {
       fs.writeFileSync(`${DATA_FOLDER}/${FILES.CREDENTIALS}`, JSON.stringify({}));
@@ -53,74 +61,91 @@ module.exports = async ({ user, pass }) => {
     console.log(`=== Coletando dados da B3... Aguarde...`);
 
     // nagivate to negociations and waiting for DOM load
-    await page.goto('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx');
+    await page.goto(STOCKS_PAGE);
     await page.waitForSelector(BROKER_SELECTOR);
 
     // extract brokers ids
-    const brokers = await page.evaluate(
-      selector => {
-        return Array.prototype.map.call(
-          document.querySelector(selector).children,
-          el => ({ id: el.value, name: el.textContent.trim() })
-        )
-      },
-      BROKER_SELECTOR
-    )
+    const brokers = await page.evaluate((selector) => {
+      return Array.prototype.map
+        .call(document.querySelector(selector).children, (el) => ({
+          id: el.value,
+          name: el.textContent.trim(),
+        }))
+        .filter(({ id }) => id !== `-1`);
+    }, BROKER_SELECTOR);
 
-    console.log(`=== CORRETORAS ===`);
+    console.log(`=== CORRETORAS === `, brokers.map(({ name }) => name).join(`, `));
 
     // extract information of each broker with one single account
-    for (let index = 1; index < brokers.length; index++) {
-      const { id: brokerId, name: brokerName } = brokers[index]
-      extractionData[brokerId] = {
-        name: brokerName,
-        data: []
-      }
-
-      await page.select(BROKER_SELECTOR, brokerId)
-      await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
-      await page.click(SEARCH_BTN_SELECTOR)
-      await page.waitForResponse('https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx')
+    const getDataByBroker = async (previousBroker, broker) => {
+      const { id: brokerId, name: brokerName } = broker;
+      console.log(`==== ${brokerName} | Selecionada  ====`);
+      await page.select(BROKER_SELECTOR, brokerId);
+      await page.waitForResponse(STOCKS_PAGE);
+      await page.click(SEARCH_BTN_SELECTOR);
+      await page.waitForResponse(STOCKS_PAGE);
 
       try {
-        await page.waitFor(BODY_TABLE_SELECTOR, { timeout: 30 * 1000 })
+        await page.waitForSelector(BODY_TABLE_SELECTOR, DEFAULT_TIMEOUT);
       } catch (error) {
-        console.log(`==== CORRETORA ${brokerName} NÃO POSSUI ATIVOS NEGOCIADOS ====`)
-        continue
+        console.log(`==== ${brokerName} | NÃO POSSUI ATIVOS NEGOCIADOS ====`);
+        await page.click(SEARCH_BTN_SELECTOR);
+        await page.waitForResponse(STOCKS_PAGE, DEFAULT_TIMEOUT);
+        return Promise.resolve([...previousBroker, { name: brokerName, data: [] }]);
       }
 
-      if (index == 1) {
-        header = await page.evaluate((selector) => {
-          return Array.prototype.map.call(
-            document.querySelectorAll(selector),
-            el => el.textContent.trim()
-          )
-        }, HEAD_TABLE_SELECTOR)
-      }
+      const header = await page.evaluate((selector) => {
+        return Array.prototype.map.call(document.querySelectorAll(selector), (el) =>
+          el.textContent.trim(),
+        );
+      }, HEAD_TABLE_SELECTOR);
 
       const rows = await page.evaluate((selector) => {
-        return Array.prototype.map.call(
-          document.querySelectorAll(selector),
-          el => Array.prototype.map.call(el.children, subEl => subEl && subEl.textContent.trim() || '')
-        )
-      }, BODY_TABLE_SELECTOR)
+        return Array.prototype.map.call(document.querySelectorAll(selector), (el) =>
+          Array.prototype.map.call(
+            el.children,
+            (subEl) => (subEl && subEl.textContent.trim()) || ``,
+          ),
+        );
+      }, BODY_TABLE_SELECTOR);
+
+      const brokerData = [];
 
       rows.forEach((row) => {
-        const dataRow = {}
+        const dataRow = {};
         row.forEach((col, index) => {
-          dataRow[header[index]] = col
-        })
-        extractionData[brokerId].data.push(dataRow)
-      })
+          dataRow[header[index]] = col;
+        });
+        brokerData.push(dataRow);
+      });
 
-      console.log(`==== ${brokerName} ... ====`);
+      console.log(`==== ${brokerName} | Dados coletados  ====`);
+      await page.click(SEARCH_BTN_SELECTOR);
+      await page.waitForResponse(STOCKS_PAGE, DEFAULT_TIMEOUT);
+      return Promise.resolve([...previousBroker, { name: brokerName, data: brokerData }]);
+    };
+
+    const result = brokers.reduce((accumulatorPromise, broker) => {
+      return accumulatorPromise.then((previousBroker) => {
+        return getDataByBroker(previousBroker, broker);
+      });
+    }, Promise.resolve([]));
+
+    return result.then((allData) => {
+      console.log(`==== FIM DA IMPORTAÇÃO ====`);
+
+      if (allData.length) {
+        fs.writeFileSync(`${DATA_FOLDER}/${FILES.EXTRACT}`, JSON.stringify(allData));
+      }
+
+      return allData;
+    });
+  };
+
+  return getExtractData().then((result) => {
+    if (!result.length) {
+      throw Error(`Nenhum dado foi extraído`);
     }
-
-    console.log(`==== RESULT ====`);
-    const cleanResult = extractionData.filter(v => v);
-    fs.writeFileSync(`${DATA_FOLDER}/${FILES.EXTRACT}`, JSON.stringify(cleanResult));
-    resolve(buildWallet());
-  })
+    return buildWallet();
+  });
 };
-
-
