@@ -81,9 +81,9 @@ module.exports = async ({ user, pass }) => {
       const { id: brokerId, name: brokerName } = broker;
       console.log(`==== ${brokerName} | Selecionada  ====`);
       await page.select(BROKER_SELECTOR, brokerId);
-      await page.waitForResponse(STOCKS_PAGE, DEFAULT_TIMEOUT);
+      await page.waitForResponse(STOCKS_PAGE);
       await page.click(SEARCH_BTN_SELECTOR);
-      await page.waitForResponse(STOCKS_PAGE, DEFAULT_TIMEOUT);
+      await page.waitForResponse(STOCKS_PAGE);
 
       try {
         await page.waitForSelector(BODY_TABLE_SELECTOR, DEFAULT_TIMEOUT);
