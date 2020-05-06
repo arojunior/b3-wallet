@@ -29,11 +29,11 @@ const importData = (client, { user, pass }) => {
   getDataFromB3({ user, pass })
     .then(() => {
       updateWallet(client);
-      client.emit(`dataImported`, true);
+      client.emit(`dataImported`);
     })
     .catch((error) => {
       console.log(`error ao importar dados`, error);
-      client.emit(`dataImported`, true);
+      client.emit(`dataImported`);
     });
 };
 
@@ -41,7 +41,7 @@ const getWallet = (client) => {
   try {
     client.emit(`wallet`, require(`${DATA_FOLDER}/${FILES.WALLET}`));
   } catch (e) {
-    client.emit(`wallet`, {});
+    client.emit(`wallet`, { data: [] });
   }
 };
 

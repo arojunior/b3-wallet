@@ -192,5 +192,6 @@ const buildWallet = () => {
 
   return builtWallet;
 };
+// buildWallet();
 
 module.exports = buildWallet;

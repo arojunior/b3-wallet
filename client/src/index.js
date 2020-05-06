@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './assets/css/index.css';
-import Wallet from './components/Wallet';
+import HomeContainer from './pages/home/home.container';
+import HomeComponent from './pages/home/home.component';
 
-ReactDOM.render(<Wallet />, document.getElementById(`root`));
+ReactDOM.render(<HomeContainer Component={HomeComponent} />, document.getElementById(`root`));

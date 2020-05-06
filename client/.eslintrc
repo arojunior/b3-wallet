@@ -18,6 +18,7 @@
   "rules": {
     "jsx-a11y/href-no-hash": "off",
     "react/jsx-filename-extension": "off",
+    "react/prop-types": "off",
     "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": [
       "error",
