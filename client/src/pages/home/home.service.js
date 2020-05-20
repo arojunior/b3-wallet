@@ -30,7 +30,7 @@ export const withSocket = ({ setWallet, setValues, setSocketConnected, setImport
   });
 };
 
-export const sumTotals = (wallet) => {
+export const sumTotals = (wallet = []) => {
   return wallet.reduce(
     (acc, item) => ({
       price: acc.price + item.totalPrice,

@@ -113,6 +113,7 @@ const buildWallet = () => {
   /**
    * Monta lista única de tickers
    */
+  console.log(`Montando carteira de ações...`);
   const tickers = acoesList
     .map((row) => {
       const ticker = row[COLUMNS.TICKER];
@@ -189,8 +190,8 @@ const buildWallet = () => {
 
   const builtWallet = { data: walletArray, updated: new Date() };
   fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(builtWallet));
-
-  return builtWallet;
+  console.log(`Carteira atualizada.`);
+  return Promise.resolve(builtWallet);
 };
 // buildWallet();
 
