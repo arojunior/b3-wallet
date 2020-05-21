@@ -103,39 +103,41 @@ const HomeComponent = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {wallet.data.map((row) => {
-            const diff = row.totalCurrent - row.totalPrice;
-            return (
-              <TableRow key={row.ticker}>
-                <TableCell component="th" scope="row">
-                  {row.ticker}
-                </TableCell>
-                <TableCell align="right">{row.quantity}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.price)}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.totalPrice)}</TableCell>
-                <TableCell align="right">{toCurrency.format(row.currentPrice)}</TableCell>
-                <TableCell
-                  align="right"
-                  className={row.variation > 0 ? classes.cellPositive : classes.cellNegative}
-                >
-                  {row.variation.toFixed(2)}%
-                </TableCell>
-                <TableCell align="right">{toCurrency.format(row.totalCurrent)}</TableCell>
-                <TableCell
-                  align="right"
-                  className={diff > 0 ? classes.cellPositive : classes.cellNegative}
-                >
-                  {toCurrency.format(diff)}
-                </TableCell>
-                <TableCell
-                  align="right"
-                  className={row.totalVariation > 0 ? classes.cellPositive : classes.cellNegative}
-                >
-                  {row.totalVariation.toFixed(2)}%
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          {wallet &&
+            wallet.data &&
+            wallet.data.map((row) => {
+              const diff = row.totalCurrent - row.totalPrice;
+              return (
+                <TableRow key={row.ticker}>
+                  <TableCell component="th" scope="row">
+                    {row.ticker}
+                  </TableCell>
+                  <TableCell align="right">{row.quantity}</TableCell>
+                  <TableCell align="right">{toCurrency.format(row.price)}</TableCell>
+                  <TableCell align="right">{toCurrency.format(row.totalPrice)}</TableCell>
+                  <TableCell align="right">{toCurrency.format(row.currentPrice)}</TableCell>
+                  <TableCell
+                    align="right"
+                    className={row.variation > 0 ? classes.cellPositive : classes.cellNegative}
+                  >
+                    {row.variation.toFixed(2)}%
+                  </TableCell>
+                  <TableCell align="right">{toCurrency.format(row.totalCurrent)}</TableCell>
+                  <TableCell
+                    align="right"
+                    className={diff > 0 ? classes.cellPositive : classes.cellNegative}
+                  >
+                    {toCurrency.format(diff)}
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    className={row.totalVariation > 0 ? classes.cellPositive : classes.cellNegative}
+                  >
+                    {row.totalVariation.toFixed(2)}%
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           <TableRow>
             <TableCell>
               <strong>{wallet.data ? `${wallet.data.length} ativos` : null}</strong>

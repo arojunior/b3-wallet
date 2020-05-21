@@ -1,7 +1,8 @@
 exports.DATA_FOLDER = `${__dirname}/../data`;
 
 exports.FILES = {
-  EXTRACT: `b3_result.json`,
+  EXTRACT_HISTORY: `b3_result_history.json`,
+  EXTRACT_WALLET: `b3_result_wallet.json`,
   STOCKS: `stocks.json`,
   STOCKS_TOTAL: `acc-stocks.json`,
   OPTIONS: `stocks-options.json`,
@@ -43,3 +44,17 @@ exports.ACOES = [`Merc. Fracionário`, `Mercado a Vista`];
 exports.OLD_TICKERS = [`NATU3`, `NATU3F`, `BMGB11`, `BMGB11F`];
 
 exports.PORT = 9990;
+
+exports.CEI = {
+  // CEI pages
+  LOGIN_PAGE: `https://cei.b3.com.br/CEI_Responsivo/`,
+  STOCKS_HISTORY: `https://cei.b3.com.br/CEI_Responsivo/negociacao-de-ativos.aspx`,
+  STOCKS_WALLET: `https://cei.b3.com.br/CEI_Responsivo/ConsultarCarteiraAtivos.aspx`,
+  // CEI html selectors
+  BROKER_SELECTOR: `#ctl00_ContentPlaceHolder1_ddlAgentes`,
+  SEARCH_BTN_SELECTOR: `#ctl00_ContentPlaceHolder1_btnConsultar`,
+  HISTORY_HEAD_TABLE_SELECTOR: `#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > thead > tr > th`,
+  HISTORY_BODY_TABLE_SELECTOR: `#ctl00_ContentPlaceHolder1_rptAgenteBolsa_ctl00_rptContaBolsa_ctl00_pnAtivosNegociados > div > div > section > div > table > tbody > tr`,
+  WALLET_HEAD_TABLE_SELECTOR: `#ctl00_ContentPlaceHolder1_rptAgenteContaMercado_ctl00_rptContaMercado_ctl00_rprCarteira_ctl00_grdCarteira > thead > tr > th`,
+  WALLET_BODY_TABLE_SELECTOR: `#ctl00_ContentPlaceHolder1_rptAgenteContaMercado_ctl00_rptContaMercado_ctl00_rprCarteira_ctl00_grdCarteira > tbody > tr`,
+};

@@ -4,8 +4,11 @@ exports.getQuote = (ticker) => {
   return axios.get(`https://finance.yahoo.com/quote/${ticker}.sa/`).then(({ data }) => {
     const main = JSON.parse(data.split(`root.App.main = `)[1].split(`;\n}(this));`)[0]);
 
-    if (!main.context.dispatcher.stores.QuoteSummaryStore.financialData) {
-      return null;
+    if (
+      !main.context.dispatcher.stores.QuoteSummaryStore ||
+      !main.context.dispatcher.stores.QuoteSummaryStore.financialData
+    ) {
+      return {};
     }
 
     const quote = {

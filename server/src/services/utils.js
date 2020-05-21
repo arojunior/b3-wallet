@@ -39,4 +39,4 @@ exports.monthToName = (value) => {
   return MONTHS[Number(value.split(`/`)[1])];
 };
 
-exports.toNumber = (value) => value.replace(`.`, ``).replace(`,`, `.`);
+exports.toNumber = (value) => parseInt(value.replace(`.`, ``).replace(`,`, `.`), 10);

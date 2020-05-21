@@ -33,9 +33,9 @@ const updateData = () => {
         fs.writeFileSync(`${DATA_FOLDER}/${FILES.WALLET}`, JSON.stringify(newWallet));
         return newWallet;
       })
-      .catch(() => {
-        console.log(`ERRO AO ATUALIZAR PREÇOS`);
-        return {};
+      .catch((err) => {
+        console.log(`ERRO AO ATUALIZAR PREÇOS`, err);
+        return { data: wallet.data, updated: new Date() };
       });
   } catch (e) {
     return Promise.reject(Error(`ERRO AO ATUALIZAR PREÇOS`));

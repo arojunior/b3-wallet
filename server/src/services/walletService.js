@@ -1,5 +1,5 @@
 const { DATA_FOLDER, FILES } = require(`../constants`);
-const getDataFromB3 = require(`../scripts/extractData`);
+const GetDataFromCEI = require(`../scripts/extractData`);
 const updatePrices = require(`../scripts/updateData`);
 
 let updateInterval;
@@ -26,7 +26,10 @@ const updateWallet = (client) => {
 };
 
 const importData = (client, { user, pass }) => {
-  getDataFromB3({ user, pass })
+  const getDataFromCEI = new GetDataFromCEI({ user, pass });
+
+  return getDataFromCEI
+    .extractData()
     .then(() => {
       updateWallet(client);
       client.emit(`dataImported`);
