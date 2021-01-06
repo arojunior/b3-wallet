@@ -10,7 +10,7 @@
     "lint": "eslint src/**/*.js"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "puppeteer": "^2.1.1",
     "socket.io": "^2.3.0"
   },
