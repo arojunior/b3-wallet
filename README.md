@@ -1,5 +1,7 @@
 # Cateira e extrator de dados da CEI/B3
 
+> :warning: **Este projeto não está mais sendo mantido**: A B3 fez várias alterações no portal do investidor e seria necessário reescrever todo o código do coletor de dados, então decidi abandonar o projeto
+
 ```sh
 yarn start
 ```
